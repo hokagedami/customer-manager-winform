@@ -1,6 +1,6 @@
-﻿using CustomerManager.Libraries.Entities;
+﻿using Libraries.Entities;
 
-namespace CustomerManager.Libraries.Interfaces;
+namespace Libraries.Interfaces;
 
 public interface ICustomerService
 {

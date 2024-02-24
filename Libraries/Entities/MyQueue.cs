@@ -1,5 +1,4 @@
-﻿namespace CustomerManager.Libraries.Entities;
-
+﻿namespace Libraries.Entities;
 /// <summary>
 /// Array based implementation of a Queue data structure with generic type
 /// </summary>

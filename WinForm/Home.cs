@@ -1,7 +1,7 @@
-using CustomerManager.Libraries.Entities;
-using CustomerManager.Libraries.Interfaces;
+using Libraries.Entities;
+using Libraries.Interfaces;
 
-namespace CustomerManager
+namespace WinForm
 {
     public partial class Home : Form
     {

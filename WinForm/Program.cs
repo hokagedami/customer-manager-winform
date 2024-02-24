@@ -1,7 +1,7 @@
-using CustomerManager.Libraries.Interfaces;
-using CustomerManager.Libraries.Services;
+using Libraries.Interfaces;
+using Libraries.Services;
 
-namespace CustomerManager
+namespace WinForm
 {
     internal static class Program
     {

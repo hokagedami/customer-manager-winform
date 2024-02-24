@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
-using CustomerManager.Libraries.Entities;
+using Libraries.Entities;
 
-namespace CustomerManager
+namespace WinForm
 {
     partial class Home
     {

@@ -1,8 +1,7 @@
-﻿using CustomerManager.Libraries.Entities;
-using CustomerManager.Libraries.Interfaces;
-using Customer = CustomerManager.Libraries.Entities.Customer;
+﻿using Libraries.Entities;
+using Libraries.Interfaces;
 
-namespace CustomerManager.Libraries.Services;
+namespace Libraries.Services;
 
 public class CustomerService: ICustomerService
 {

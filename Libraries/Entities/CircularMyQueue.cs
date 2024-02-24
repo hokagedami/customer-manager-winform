@@ -1,4 +1,4 @@
-﻿namespace CustomerManager.Libraries.Entities;
+﻿namespace Libraries.Entities;
 
 /// <summary>
 /// Circular queue implementation with generic type, and has a fixed size.

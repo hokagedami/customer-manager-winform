@@ -1,4 +1,4 @@
-﻿namespace CustomerManager.Libraries.Entities;
+﻿namespace Libraries.Entities;
 
 public class Customer(string name, string age, string address, float amountOwed)
 {

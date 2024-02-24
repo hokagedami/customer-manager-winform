@@ -1,4 +1,4 @@
-﻿namespace CustomerManager.Libraries.Entities;
+﻿namespace Libraries.Entities;
 
 /// <summary>
 /// Array based implementation of a Stack data structure with generic type
