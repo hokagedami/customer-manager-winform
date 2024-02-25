@@ -5,7 +5,7 @@ namespace Libraries.Services;
 
 public class CustomerService: ICustomerService
 {
-    private readonly MyQueue<Customer> _customers;
+    private MyQueue<Customer> _customers;
 
     public CustomerService(int size)
     {
@@ -54,5 +54,20 @@ public class CustomerService: ICustomerService
     public MyQueue<Customer> GetCustomers()
     {
         return _customers;
+    }
+    
+    public void UseCircularQueue(int size)
+    {
+        if (_customers is CircularMyQueue<Customer>) return;
+        if (_customers.Count() > size)
+        {
+            throw new InvalidOperationException("The new queue size is smaller than the current queue size");
+        }
+        var newQueue = new CircularMyQueue<Customer>(size);
+        foreach (var customer in _customers.ToArray())
+        {
+            newQueue.Enqueue(customer);
+        }
+        _customers = newQueue;
     }
 }

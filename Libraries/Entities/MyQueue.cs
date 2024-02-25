@@ -77,6 +77,10 @@ public class MyQueue<T> where T : class
         return Size;
     }
     
+    /// <summary>
+    /// Method to convert the queue to an array
+    /// </summary>
+    /// <returns></returns>
     public T[] ToArray()
     {
         var result = new T[Size];
@@ -85,6 +89,16 @@ public class MyQueue<T> where T : class
         {
             result[index] = MainQueue[i];
             index++;
+        }
+        return result;
+    }
+    
+    public IList<T> ToList()
+    {
+        var result = new List<T>();
+        for (var i = Front; i <= Rear; i++)
+        {
+            result.Add(MainQueue[i]);
         }
         return result;
     }
