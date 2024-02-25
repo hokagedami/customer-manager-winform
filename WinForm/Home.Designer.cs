@@ -31,6 +31,7 @@ namespace WinForm
         /// </summary>
         private void InitializeComponent()
         {
+            components = new Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             customersGridView = new DataGridView();
@@ -45,6 +46,9 @@ namespace WinForm
             newCustomerBox = new GroupBox();
             submitButton = new Button();
             cancelButton = new Button();
+            notificationGroupBox = new GroupBox();
+            notoficationTextBox = new TextBox();
+            notificationCloseButton = new Button();
             customersQueueGroupBox = new GroupBox();
             updateCircularQueueSizeButton = new Button();
             circularQueueSizeTextBox = new TextBox();
@@ -66,8 +70,11 @@ namespace WinForm
             dequeuedCustomerAddressLabel = new Label();
             dequeuedCustomerAddressTextBox = new TextBox();
             closeDequeuedCustomerViewButton = new Button();
+            closeEnqueueCustomerFormButton = new Button();
+            exitNewCustomerFormToolTip = new ToolTip(components);
             ((ISupportInitialize)customersGridView).BeginInit();
             newCustomerBox.SuspendLayout();
+            notificationGroupBox.SuspendLayout();
             customersQueueGroupBox.SuspendLayout();
             dequeuedCustomerGroupBox.SuspendLayout();
             SuspendLayout();
@@ -171,9 +178,8 @@ namespace WinForm
             // 
             newCustomerBox.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             newCustomerBox.BackColor = SystemColors.GradientActiveCaption;
+            newCustomerBox.Controls.Add(closeEnqueueCustomerFormButton);
             newCustomerBox.Controls.Add(submitButton);
-            newCustomerBox.Controls.Add(nameTextBox);
-            newCustomerBox.Controls.Add(nameLabel);
             newCustomerBox.Controls.Add(ageLabel);
             newCustomerBox.Controls.Add(ageTextBox);
             newCustomerBox.Controls.Add(amountOwedLabel);
@@ -181,6 +187,8 @@ namespace WinForm
             newCustomerBox.Controls.Add(addressLabel);
             newCustomerBox.Controls.Add(addressTextBox);
             newCustomerBox.Controls.Add(cancelButton);
+            newCustomerBox.Controls.Add(nameLabel);
+            newCustomerBox.Controls.Add(nameTextBox);
             newCustomerBox.FlatStyle = FlatStyle.Popup;
             newCustomerBox.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             newCustomerBox.Location = new Point(40, 28);
@@ -208,7 +216,7 @@ namespace WinForm
             // cancelButton
             // 
             cancelButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            cancelButton.BackColor = Color.Red;
+            cancelButton.BackColor = Color.Gray;
             cancelButton.FlatStyle = FlatStyle.Popup;
             cancelButton.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             cancelButton.ForeColor = SystemColors.HighlightText;
@@ -218,7 +226,41 @@ namespace WinForm
             cancelButton.TabIndex = 11;
             cancelButton.Text = "Clear Form";
             cancelButton.UseVisualStyleBackColor = false;
-            cancelButton.Click += CloseEnqueueCustomerView;
+            cancelButton.Click += ClearEnqueueCustomerForm;
+            // 
+            // notificationGroupBox
+            // 
+            notificationGroupBox.BackColor = Color.Gainsboro;
+            notificationGroupBox.Controls.Add(notificationCloseButton);
+            notificationGroupBox.Controls.Add(notoficationTextBox);
+            notificationGroupBox.Location = new Point(23, 7);
+            notificationGroupBox.Name = "notificationGroupBox";
+            notificationGroupBox.Size = new Size(573, 398);
+            notificationGroupBox.TabIndex = 13;
+            notificationGroupBox.TabStop = false;
+            notificationGroupBox.Text = "Notification";
+            // 
+            // notoficationTextBox
+            // 
+            notoficationTextBox.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            notoficationTextBox.Location = new Point(161, 163);
+            notoficationTextBox.Name = "notoficationTextBox";
+            notoficationTextBox.ReadOnly = true;
+            notoficationTextBox.Size = new Size(263, 29);
+            notoficationTextBox.TabIndex = 1;
+            notoficationTextBox.TabStop = false;
+            notoficationTextBox.TextAlign = HorizontalAlignment.Center;
+            // 
+            // notificationCloseButton
+            // 
+            notificationCloseButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            notificationCloseButton.Location = new Point(259, 204);
+            notificationCloseButton.Name = "notificationCloseButton";
+            notificationCloseButton.Size = new Size(75, 32);
+            notificationCloseButton.TabIndex = 0;
+            notificationCloseButton.Text = "OK";
+            notificationCloseButton.UseVisualStyleBackColor = true;
+            notificationCloseButton.Click += CloseNotificationButtonOnClick;
             // 
             // customersQueueGroupBox
             // 
@@ -234,7 +276,7 @@ namespace WinForm
             customersQueueGroupBox.Controls.Add(totalCustomerTextBox);
             customersQueueGroupBox.Controls.Add(totalCustomersLabel);
             customersQueueGroupBox.Controls.Add(customersGridView);
-            customersQueueGroupBox.Location = new Point(40, 28);
+            customersQueueGroupBox.Location = new Point(23, 12);
             customersQueueGroupBox.Name = "customersQueueGroupBox";
             customersQueueGroupBox.Size = new Size(534, 393);
             customersQueueGroupBox.TabIndex = 12;
@@ -459,11 +501,34 @@ namespace WinForm
             closeDequeuedCustomerViewButton.UseVisualStyleBackColor = false;
             closeDequeuedCustomerViewButton.Click += CloseDequeuedCustomerButtonOnClick;
             // 
+            // closeEnqueueCustomerFormButton
+            // 
+            closeEnqueueCustomerFormButton.BackColor = Color.Red;
+            closeEnqueueCustomerFormButton.FlatStyle = FlatStyle.Popup;
+            closeEnqueueCustomerFormButton.ForeColor = Color.White;
+            closeEnqueueCustomerFormButton.Location = new Point(418, 10);
+            closeEnqueueCustomerFormButton.Name = "closeEnqueueCustomerFormButton";
+            closeEnqueueCustomerFormButton.Size = new Size(30, 23);
+            closeEnqueueCustomerFormButton.TabIndex = 12;
+            closeEnqueueCustomerFormButton.Text = "X";
+            closeEnqueueCustomerFormButton.UseVisualStyleBackColor = false;
+            closeEnqueueCustomerFormButton.Click += CloseEnqueueCustomerView;
+            //
+            // exitNewCustomerFormToolTip
+            //
+            exitNewCustomerFormToolTip.SetToolTip(closeEnqueueCustomerFormButton, "Close Enqueue Customer Form");
+            exitNewCustomerFormToolTip.AutoPopDelay = 5000;
+            exitNewCustomerFormToolTip.InitialDelay = 1000;
+            exitNewCustomerFormToolTip.ReshowDelay = 500;
+            
+            
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(613, 459);
+            ClientSize = new Size(617, 428);
+            Controls.Add(notificationGroupBox);
             Controls.Add(customersQueueGroupBox);
             Controls.Add(newCustomerBox);
             Controls.Add(dequeuedCustomerGroupBox);
@@ -473,6 +538,8 @@ namespace WinForm
             ((ISupportInitialize)customersGridView).EndInit();
             newCustomerBox.ResumeLayout(false);
             newCustomerBox.PerformLayout();
+            notificationGroupBox.ResumeLayout(false);
+            notificationGroupBox.PerformLayout();
             customersQueueGroupBox.ResumeLayout(false);
             customersQueueGroupBox.PerformLayout();
             dequeuedCustomerGroupBox.ResumeLayout(false);
@@ -483,8 +550,6 @@ namespace WinForm
         #endregion
 
         private DataGridView customersGridView;
-        private MyQueue<Customer> customers;
-        private BindingList<Customer> customersBindingList;
         private TextBox nameTextBox;
         private TextBox ageTextBox;
         private TextBox amountOwedTextBox;
@@ -517,5 +582,10 @@ namespace WinForm
         private TextBox circularQueueSizeTextBox;
         private Label circularQueueSizeLabel;
         private Button updateCircularQueueSizeButton;
+        private GroupBox notificationGroupBox;
+        private TextBox notoficationTextBox;
+        private Button notificationCloseButton;
+        private Button closeEnqueueCustomerFormButton;
+        private ToolTip exitNewCustomerFormToolTip;
     }
 }

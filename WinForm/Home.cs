@@ -7,10 +7,10 @@ namespace WinForm
 {
     public partial class Home : Form
     {
-        private ICustomerService _customerService;
+        private CustomerService _customerService;
+        private GroupView? viewBeforeNotification;
         public Home()
         {
-
             InitializeComponent();
         }
 
@@ -21,17 +21,9 @@ namespace WinForm
             circularQueueSizeTextBox.Visible = makeCircularQueueCheckBox.Checked;
             updateCircularQueueSizeButton.Visible = makeCircularQueueCheckBox.Checked;
             _customerService = new CustomerService();
-            _customerService.AddCustomer(new Customer("John Doe", "25", "123 Main St", 100.00f));
-            _customerService.AddCustomer(new Customer("Jane Doe", "22", "123 Main St", 200.00f));
-            _customerService.AddCustomer(new Customer("Jim Doe", "20", "123 Main St", 300.00f));
-            _customerService.AddCustomer(new Customer("Jill Doe", "18", "123 Main St", 400.00f));
-            _customerService.AddCustomer(new Customer("Jack Doe", "15", "123 Main St", 500.00f));
-            // bind the customers to the grid
-            customersGridView.DataSource = _customerService.GetCustomers().ToList();
-            totalAmountOwedTextBox.Text = _customerService.GetTotalAmountOwed().ToString(CultureInfo.InvariantCulture);
-            totalCustomerTextBox.Text = _customerService.GetCustomers().Count().ToString();
             newCustomerBox.Visible = false;
             dequeuedCustomerGroupBox.Visible = false;
+            notificationGroupBox.Visible = false;
         }
 
         private void IsCircularQueueCheckedChanged(object sender, EventArgs e)
@@ -58,43 +50,43 @@ namespace WinForm
                && string.IsNullOrEmpty(addressTextBox.Text)
                && string.IsNullOrEmpty(amountOwedTextBox.Text))
             {
-                MessageBox.Show(@"All fields are required", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowNotification(GroupView.NewCustomer, "All fields are required", true);
                 return;
             }
             // check if name textbox is empty
             if (string.IsNullOrEmpty(nameTextBox.Text))
             {
-                MessageBox.Show(@"Name is required", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowNotification(GroupView.NewCustomer, "Name is required", true);
                 return;
             }
             // check if age textbox is empty
             if (string.IsNullOrEmpty(ageTextBox.Text))
             {
-                MessageBox.Show(@"Age is required");
+                ShowNotification(GroupView.NewCustomer, "Age is required", true);
                 return;
             }
             // check if age is a positive number
             if (!int.TryParse(ageTextBox.Text, out _))
             {
-                MessageBox.Show(@"Age must be a number greater than 0");
+                ShowNotification(GroupView.NewCustomer, "Age must be a number greater than 0", true);
                 return;
             }
             // check if address textbox is empty
             if (string.IsNullOrEmpty(addressTextBox.Text))
             {
-                MessageBox.Show(@"Address is required");
+                ShowNotification(GroupView.NewCustomer, "Address is required", true);
                 return;
             }
             // check if amount owed textbox is empty
             if (string.IsNullOrEmpty(amountOwedTextBox.Text))
             {
-                MessageBox.Show(@"Amount owed is required");
+                ShowNotification(GroupView.NewCustomer, "Amount owed is required", true);
                 return;
             }
             // check if amount owed is a positive number
             if (!float.TryParse(amountOwedTextBox.Text, out _))
             {
-                MessageBox.Show(@"Amount owed must be a number greater than 0");
+                ShowNotification(GroupView.NewCustomer, "Amount owed must be a number greater than 0", true);
                 return;
             }
             // add the customer
@@ -104,19 +96,14 @@ namespace WinForm
                     ageTextBox.Text,
                     addressTextBox.Text,
                     float.Parse(amountOwedTextBox.Text)));
-                customersGridView.DataSource = null;
-                customersGridView.DataSource = _customerService.GetCustomers().ToList();
-                totalAmountOwedTextBox.Text = _customerService.GetTotalAmountOwed().ToString(CultureInfo.InvariantCulture);
-                totalCustomerTextBox.Text = _customerService.GetCustomers().Count().ToString();
-                // clear the textboxes
+                UpdateCustomerQueue();
                 ClearNewCustomerEditForm();
-                newCustomerBox.Visible = false;
-                customersQueueGroupBox.Visible = true;
+                ShowNotification(GroupView.NewCustomer, "Customer added to queue successfully");
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                MessageBox.Show(exception.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowNotification(GroupView.NewCustomer, exception.Message, true);
                 ClearNewCustomerEditForm();
             }
         }
@@ -127,6 +114,11 @@ namespace WinForm
             ageTextBox.Text = string.Empty;
             addressTextBox.Text = string.Empty;
             amountOwedTextBox.Text = string.Empty;
+        }
+        
+        private void ClearEnqueueCustomerForm(object sender, EventArgs e)
+        {
+            ClearNewCustomerEditForm();
         }
 
         private void CloseDequeuedCustomerButtonOnClick(object sender, EventArgs e)
@@ -146,25 +138,32 @@ namespace WinForm
             customersQueueGroupBox.Visible = false;
         }
 
-
         private void CloseEnqueueCustomerView(object sender, EventArgs e)
         {
             ClearNewCustomerEditForm();
+            UpdateCustomerQueue();
             newCustomerBox.Visible = false;
             customersQueueGroupBox.Visible = true;
-            UpdateCustomerQueue();
         }
 
         private void DequeueCustomerButtonClick(object sender, EventArgs e)
         {
-            var customer = _customerService.GetNextCustomer();
-            dequeuedCustomerNameTextBox.Text = customer.Name;
-            dequeuedCustomerAgeTextBox.Text = customer.Age;
-            dequeuedCustomerAddressTextBox.Text = customer.Address;
-            dequeuedCustomerAmountOwedTextBox.Text = customer.AmountOwed.ToString(CultureInfo.InvariantCulture);
-            dequeuedCustomerGroupBox.Visible = true;
-            customersQueueGroupBox.Visible = false;
-            UpdateCustomerQueue();
+            try
+            {
+                var customer = _customerService.GetNextCustomer();
+                dequeuedCustomerNameTextBox.Text = customer.Name;
+                dequeuedCustomerAgeTextBox.Text = customer.Age;
+                dequeuedCustomerAddressTextBox.Text = customer.Address;
+                dequeuedCustomerAmountOwedTextBox.Text = customer.AmountOwed.ToString(CultureInfo.InvariantCulture);
+                dequeuedCustomerGroupBox.Visible = true;
+                customersQueueGroupBox.Visible = false;
+                UpdateCustomerQueue();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                ShowNotification(GroupView.DequeuedCustomer, exception.Message, true);
+            }
         }
 
         private void UpdateCustomerQueue()
@@ -179,12 +178,12 @@ namespace WinForm
         {
             if (string.IsNullOrEmpty(circularQueueSizeTextBox.Text))
             {
-                MessageBox.Show(@"Queue size is required");
+                ShowNotification(GroupView.CustomersQueue, "Queue size is required", true);
                 return;
             }
             if (!int.TryParse(circularQueueSizeTextBox.Text, out _))
             {
-                MessageBox.Show(@"Queue size must be a number greater than 0");
+                ShowNotification(GroupView.CustomersQueue, "Queue size must be a number", true);
                 return;
             }
 
@@ -196,8 +195,69 @@ namespace WinForm
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                 MessageBox.Show(exception.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowNotification(GroupView.CustomersQueue, exception.Message, true);
             }
+        }
+        
+        private void ShowNotification(GroupView groupView, string message, bool error = false)
+        {
+            notoficationTextBox.Text = message;
+            var textSize = TextRenderer.MeasureText(notoficationTextBox.Text, notoficationTextBox.Font);
+            if(textSize.Width > notoficationTextBox.Width) notoficationTextBox.Multiline = true;
+            notoficationTextBox.BackColor = error ? Color.Red : Color.Green;
+            // change the text color to white
+            notoficationTextBox.ForeColor = Color.White;
+            switch (groupView)
+            {
+                case GroupView.CustomersQueue:
+                    customersQueueGroupBox.Visible = false;
+                    break;
+                case GroupView.NewCustomer:
+                    newCustomerBox.Visible = false;
+                    break;
+                case GroupView.DequeuedCustomer:
+                    dequeuedCustomerGroupBox.Visible = false;
+                    break;
+                case GroupView.Notification:
+                default:
+                    customersQueueGroupBox.Visible = false;
+                    newCustomerBox.Visible = false;
+                    dequeuedCustomerGroupBox.Visible = false;
+                    break;
+            }
+            viewBeforeNotification = groupView;
+            notificationGroupBox.Visible = true;
+        }
+
+        private void CloseNotificationButtonOnClick(object? sender, EventArgs e)
+        {
+            notoficationTextBox.Text = string.Empty;
+            notificationGroupBox.Visible = false;
+            switch (viewBeforeNotification)
+            {
+                case GroupView.CustomersQueue:
+                    customersQueueGroupBox.Visible = true;
+                    break;
+                case GroupView.NewCustomer:
+                    newCustomerBox.Visible = true;
+                    break;
+                case GroupView.DequeuedCustomer:
+                    dequeuedCustomerGroupBox.Visible = true;
+                    break;
+                case GroupView.Notification:
+                default:
+                    notificationGroupBox.Visible = true;
+                    break;
+            }
+        }
+        private void PopulateWithDummyCustomers()
+        {
+            _customerService.AddCustomer(new Customer("John Doe", "25", "123 Main St", 100.00f));
+            _customerService.AddCustomer(new Customer("Jane Doe", "22", "123 Main St", 200.00f));
+            _customerService.AddCustomer(new Customer("Jim Doe", "20", "123 Main St", 300.00f));
+            _customerService.AddCustomer(new Customer("Jill Doe", "18", "123 Main St", 400.00f));
+            _customerService.AddCustomer(new Customer("Jack Doe", "15", "123 Main St", 500.00f));
+            UpdateCustomerQueue();
         }
     }
 }
