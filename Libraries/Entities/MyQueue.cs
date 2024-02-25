@@ -116,4 +116,16 @@ public class MyQueue<T> where T : class
         }
         MainQueue = temp;
     }
+
+    public bool Contains(Customer customer)
+    {
+        // check if the customer is null
+        if (customer == null) return false;
+        // check if the customer is already in the queue using simple iteration
+        for (var i = Front; i <= Rear; i++)
+        {
+            if (MainQueue[i] == customer) return true;
+        }
+        return false;
+    }
 }

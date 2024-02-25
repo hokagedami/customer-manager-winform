@@ -1,4 +1,5 @@
-﻿using Libraries.Entities;
+﻿using System.Globalization;
+using Libraries.Entities;
 using Libraries.Interfaces;
 
 namespace Libraries.Services;
@@ -18,6 +19,25 @@ public class CustomerService: ICustomerService
     
     public void AddCustomer(Customer customer)
     {
+        // check if the customer is null
+        if (customer == null)
+        {
+            throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
+        }
+        // check if the customer is already in the queue using simple iteration
+        if (_customers.ToArray().Any(customerInQueue => customer.Name == customerInQueue.Name 
+                                             && customer.Age == customerInQueue.Age 
+                                             && customer.Address == customerInQueue.Address 
+                                             && customer.AmountOwed.ToString(CultureInfo.InvariantCulture) 
+                                                == customerInQueue.AmountOwed.ToString(CultureInfo.InvariantCulture)))
+        {
+            throw new InvalidOperationException("Customer already exists in the queue");
+        }
+        if (_customers.ToArray().Any(customerInQueue => customer.Name == customerInQueue.Name))
+        {
+            throw new InvalidOperationException($"Customer with name {customer.Name} already exists in the queue");
+        }
+        
         _customers.Enqueue(customer);
     }
     

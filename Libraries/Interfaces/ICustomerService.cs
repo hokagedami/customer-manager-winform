@@ -11,4 +11,5 @@ public interface ICustomerService
     float GetTotalAmountOwed();
     Customer GetCustomerWithMostAmountOwed();
     MyQueue<Customer> GetCustomers();
+    void UseCircularQueue(int size);
 }
