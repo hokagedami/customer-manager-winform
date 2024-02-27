@@ -23,8 +23,8 @@ public class CircularMyQueue<T>: MyQueue<T> where T : class
         {
             throw new InvalidOperationException("Queue is full");
         }
-        Rear = (Rear + 1) % Capacity;
-        MainQueue[Rear] = item;
+        RearIndex = (RearIndex + 1) % Capacity;
+        MainQueue[RearIndex] = item;
         Size++;
     }
     
@@ -34,8 +34,8 @@ public class CircularMyQueue<T>: MyQueue<T> where T : class
         {
             throw new InvalidOperationException("Queue is empty");
         }
-        var item = MainQueue[Front];
-        Front = (Front + 1) % Capacity;
+        var item = MainQueue[FrontIndex];
+        FrontIndex = (FrontIndex + 1) % Capacity;
         Size--;
         return item;
     }
@@ -46,6 +46,6 @@ public class CircularMyQueue<T>: MyQueue<T> where T : class
         {
             throw new InvalidOperationException("Queue is empty");
         }
-        return MainQueue[Front];
+        return MainQueue[FrontIndex];
     }
 }

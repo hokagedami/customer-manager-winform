@@ -1,13 +1,13 @@
 ﻿namespace Libraries.Entities;
 /// <summary>
-/// Array based implementation of a Queue data structure with generic type
+/// Array based implementation of a Queue data structure with generic type T
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class MyQueue<T> where T : class
 {
     private protected T[] MainQueue;
-    private protected int Front;
-    private protected int Rear;
+    private protected int FrontIndex;
+    private protected int RearIndex;
     private protected int Size;
     private protected int Capacity = 4;
     
@@ -17,8 +17,8 @@ public class MyQueue<T> where T : class
     public MyQueue()
     {
         MainQueue = new T[Capacity];
-        Front = 0;
-        Rear = -1;
+        FrontIndex = 0;
+        RearIndex = -1;
         Size = 0;
     }
     
@@ -32,8 +32,8 @@ public class MyQueue<T> where T : class
         {
             IncreaseCapacity();
         }
-        Rear = (Rear + 1) % Capacity; // move the rear to the next item
-        MainQueue[Rear] = item; // add the item to the rear
+        RearIndex = (RearIndex + 1) % Capacity; // move the rear to the next item
+        MainQueue[RearIndex] = item; // add the item to the rear
         Size++; // increase the size
     }
     
@@ -48,8 +48,8 @@ public class MyQueue<T> where T : class
         {
             throw new InvalidOperationException("Queue is empty");
         }
-        var item = MainQueue[Front]; // get the item at the front
-        Front = (Front + 1) % Capacity; // move the front to the next item
+        var item = MainQueue[FrontIndex]; // get the item at the front
+        FrontIndex = (FrontIndex + 1) % Capacity; // move the front to the next item
         Size--; // reduce the size
         return item;
     }
@@ -65,7 +65,7 @@ public class MyQueue<T> where T : class
         {
             throw new InvalidOperationException("Queue is empty");
         }
-        return MainQueue[Front];
+        return MainQueue[FrontIndex];
     }
     
     /// <summary>
@@ -85,7 +85,7 @@ public class MyQueue<T> where T : class
     {
         var result = new T[Size];
         var index = 0;
-        for (var i = Front; i <= Rear; i++)
+        for (var i = FrontIndex; i <= RearIndex; i++)
         {
             result[index] = MainQueue[i];
             index++;
@@ -96,7 +96,7 @@ public class MyQueue<T> where T : class
     public IList<T> ToList()
     {
         var result = new List<T>();
-        for (var i = Front; i <= Rear; i++)
+        for (var i = FrontIndex; i <= RearIndex; i++)
         {
             result.Add(MainQueue[i]);
         }
@@ -115,17 +115,5 @@ public class MyQueue<T> where T : class
             temp[i] = MainQueue[i];
         }
         MainQueue = temp;
-    }
-
-    public bool Contains(Customer customer)
-    {
-        // check if the customer is null
-        if (customer == null) return false;
-        // check if the customer is already in the queue using simple iteration
-        for (var i = Front; i <= Rear; i++)
-        {
-            if (MainQueue[i] == customer) return true;
-        }
-        return false;
     }
 }

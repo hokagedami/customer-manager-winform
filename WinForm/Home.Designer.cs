@@ -44,39 +44,43 @@ namespace WinForm
             addressLabel = new Label();
             addressTextBox = new TextBox();
             newCustomerBox = new GroupBox();
+            closeEnqueueCustomerFormButton = new Button();
             submitButton = new Button();
             cancelButton = new Button();
             notificationGroupBox = new GroupBox();
-            notoficationTextBox = new TextBox();
             notificationCloseButton = new Button();
+            notoficationTextBox = new TextBox();
             customersQueueGroupBox = new GroupBox();
+            populateQueueWithDummyDataButton = new Button();
+            displayCustomerWithHighestOwedAmount = new Button();
+            queueToggleButton = new Button();
             updateCircularQueueSizeButton = new Button();
             circularQueueSizeTextBox = new TextBox();
             circularQueueSizeLabel = new Label();
-            makeCircularQueueCheckBox = new CheckBox();
             enqueueCustomerButton = new Button();
             dequeueCustomerButton = new Button();
             totalAmountOwedTextBox = new TextBox();
             totalAmountOwedLabel = new Label();
             totalCustomerTextBox = new TextBox();
             totalCustomersLabel = new Label();
-            dequeuedCustomerGroupBox = new GroupBox();
-            dequeuedCustomerNameTextBox = new TextBox();
+            customerGroupBox = new GroupBox();
+            customerNameTextBox = new TextBox();
             dequeuedCustomerNameLabel = new Label();
             dequeuedCustomerAgeLabel = new Label();
-            dequeuedCustomerAgeTextBox = new TextBox();
+            customerAgeTextBox = new TextBox();
             dequeuedCustomerAmountOwedLabel = new Label();
-            dequeuedCustomerAmountOwedTextBox = new TextBox();
+            customerAmountOwedTextBox = new TextBox();
             dequeuedCustomerAddressLabel = new Label();
-            dequeuedCustomerAddressTextBox = new TextBox();
+            customerAddressTextBox = new TextBox();
             closeDequeuedCustomerViewButton = new Button();
-            closeEnqueueCustomerFormButton = new Button();
             exitNewCustomerFormToolTip = new ToolTip(components);
+            customerWithHighestAmountOwedToolTip = new ToolTip(components);
+            dummyDataToolTip = new ToolTip(components);
             ((ISupportInitialize)customersGridView).BeginInit();
             newCustomerBox.SuspendLayout();
             notificationGroupBox.SuspendLayout();
             customersQueueGroupBox.SuspendLayout();
-            dequeuedCustomerGroupBox.SuspendLayout();
+            customerGroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // customersGridView
@@ -99,10 +103,10 @@ namespace WinForm
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             customersGridView.DefaultCellStyle = dataGridViewCellStyle2;
-            customersGridView.Location = new Point(22, 51);
+            customersGridView.Location = new Point(22, 66);
             customersGridView.Name = "customersGridView";
             customersGridView.ReadOnly = true;
-            customersGridView.Size = new Size(487, 226);
+            customersGridView.Size = new Size(436, 226);
             customersGridView.TabIndex = 0;
             // 
             // nameTextBox
@@ -191,12 +195,26 @@ namespace WinForm
             newCustomerBox.Controls.Add(nameTextBox);
             newCustomerBox.FlatStyle = FlatStyle.Popup;
             newCustomerBox.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            newCustomerBox.Location = new Point(40, 28);
+            newCustomerBox.Location = new Point(31, 30);
             newCustomerBox.Name = "newCustomerBox";
             newCustomerBox.Size = new Size(476, 274);
             newCustomerBox.TabIndex = 10;
             newCustomerBox.TabStop = false;
             newCustomerBox.Text = "New Customer";
+            // 
+            // closeEnqueueCustomerFormButton
+            // 
+            closeEnqueueCustomerFormButton.BackColor = Color.Red;
+            closeEnqueueCustomerFormButton.FlatStyle = FlatStyle.Popup;
+            closeEnqueueCustomerFormButton.ForeColor = Color.White;
+            closeEnqueueCustomerFormButton.Location = new Point(418, 10);
+            closeEnqueueCustomerFormButton.Name = "closeEnqueueCustomerFormButton";
+            closeEnqueueCustomerFormButton.Size = new Size(30, 23);
+            closeEnqueueCustomerFormButton.TabIndex = 12;
+            closeEnqueueCustomerFormButton.Text = "X";
+            exitNewCustomerFormToolTip.SetToolTip(closeEnqueueCustomerFormButton, "Close Enqueue Customer Form");
+            closeEnqueueCustomerFormButton.UseVisualStyleBackColor = false;
+            closeEnqueueCustomerFormButton.Click += CloseEnqueueCustomerView;
             // 
             // submitButton
             // 
@@ -233,28 +251,17 @@ namespace WinForm
             notificationGroupBox.BackColor = Color.Gainsboro;
             notificationGroupBox.Controls.Add(notificationCloseButton);
             notificationGroupBox.Controls.Add(notoficationTextBox);
-            notificationGroupBox.Location = new Point(23, 7);
+            notificationGroupBox.Location = new Point(31, 5);
             notificationGroupBox.Name = "notificationGroupBox";
-            notificationGroupBox.Size = new Size(573, 398);
+            notificationGroupBox.Size = new Size(489, 354);
             notificationGroupBox.TabIndex = 13;
             notificationGroupBox.TabStop = false;
             notificationGroupBox.Text = "Notification";
             // 
-            // notoficationTextBox
-            // 
-            notoficationTextBox.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            notoficationTextBox.Location = new Point(161, 163);
-            notoficationTextBox.Name = "notoficationTextBox";
-            notoficationTextBox.ReadOnly = true;
-            notoficationTextBox.Size = new Size(263, 29);
-            notoficationTextBox.TabIndex = 1;
-            notoficationTextBox.TabStop = false;
-            notoficationTextBox.TextAlign = HorizontalAlignment.Center;
-            // 
             // notificationCloseButton
             // 
             notificationCloseButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            notificationCloseButton.Location = new Point(259, 204);
+            notificationCloseButton.Location = new Point(195, 194);
             notificationCloseButton.Name = "notificationCloseButton";
             notificationCloseButton.Size = new Size(75, 32);
             notificationCloseButton.TabIndex = 0;
@@ -262,13 +269,26 @@ namespace WinForm
             notificationCloseButton.UseVisualStyleBackColor = true;
             notificationCloseButton.Click += CloseNotificationButtonOnClick;
             // 
+            // notoficationTextBox
+            // 
+            notoficationTextBox.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            notoficationTextBox.Location = new Point(103, 132);
+            notoficationTextBox.Name = "notoficationTextBox";
+            notoficationTextBox.ReadOnly = true;
+            notoficationTextBox.Size = new Size(263, 29);
+            notoficationTextBox.TabIndex = 1;
+            notoficationTextBox.TabStop = false;
+            notoficationTextBox.TextAlign = HorizontalAlignment.Center;
+            // 
             // customersQueueGroupBox
             // 
             customersQueueGroupBox.BackColor = Color.LightSkyBlue;
+            customersQueueGroupBox.Controls.Add(populateQueueWithDummyDataButton);
+            customersQueueGroupBox.Controls.Add(displayCustomerWithHighestOwedAmount);
+            customersQueueGroupBox.Controls.Add(queueToggleButton);
             customersQueueGroupBox.Controls.Add(updateCircularQueueSizeButton);
             customersQueueGroupBox.Controls.Add(circularQueueSizeTextBox);
             customersQueueGroupBox.Controls.Add(circularQueueSizeLabel);
-            customersQueueGroupBox.Controls.Add(makeCircularQueueCheckBox);
             customersQueueGroupBox.Controls.Add(enqueueCustomerButton);
             customersQueueGroupBox.Controls.Add(dequeueCustomerButton);
             customersQueueGroupBox.Controls.Add(totalAmountOwedTextBox);
@@ -276,21 +296,61 @@ namespace WinForm
             customersQueueGroupBox.Controls.Add(totalCustomerTextBox);
             customersQueueGroupBox.Controls.Add(totalCustomersLabel);
             customersQueueGroupBox.Controls.Add(customersGridView);
-            customersQueueGroupBox.Location = new Point(23, 12);
+            customersQueueGroupBox.Location = new Point(12, 1);
             customersQueueGroupBox.Name = "customersQueueGroupBox";
-            customersQueueGroupBox.Size = new Size(534, 393);
+            customersQueueGroupBox.Size = new Size(561, 358);
             customersQueueGroupBox.TabIndex = 12;
             customersQueueGroupBox.TabStop = false;
             customersQueueGroupBox.Text = "Customers Queue";
             // 
+            // populateQueueWithDummyDataButton
+            // 
+            populateQueueWithDummyDataButton.BackColor = Color.Silver;
+            populateQueueWithDummyDataButton.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            populateQueueWithDummyDataButton.Location = new Point(466, 256);
+            populateQueueWithDummyDataButton.Name = "populateQueueWithDummyDataButton";
+            populateQueueWithDummyDataButton.Size = new Size(85, 43);
+            populateQueueWithDummyDataButton.TabIndex = 15;
+            populateQueueWithDummyDataButton.Text = "Dummy Data";
+            dummyDataToolTip.SetToolTip(populateQueueWithDummyDataButton, "Populate Queue with Dummy Data");
+            populateQueueWithDummyDataButton.UseVisualStyleBackColor = false;
+            populateQueueWithDummyDataButton.Click += PopulateQueueWithDummyData;
+            // 
+            // displayCustomerWithHighestOwedAmount
+            // 
+            displayCustomerWithHighestOwedAmount.BackColor = Color.DarkSlateBlue;
+            displayCustomerWithHighestOwedAmount.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            displayCustomerWithHighestOwedAmount.ForeColor = Color.White;
+            displayCustomerWithHighestOwedAmount.Location = new Point(464, 207);
+            displayCustomerWithHighestOwedAmount.Name = "displayCustomerWithHighestOwedAmount";
+            displayCustomerWithHighestOwedAmount.Size = new Size(85, 43);
+            displayCustomerWithHighestOwedAmount.TabIndex = 14;
+            displayCustomerWithHighestOwedAmount.Text = "Display Customer";
+            customerWithHighestAmountOwedToolTip.SetToolTip(displayCustomerWithHighestOwedAmount, "Show Customer with Maximum Amount Owed");
+            displayCustomerWithHighestOwedAmount.UseVisualStyleBackColor = false;
+            displayCustomerWithHighestOwedAmount.Click += DisplayCustomerWithHighestOwedAmount;
+            // 
+            // queueToggleButton
+            // 
+            queueToggleButton.BackColor = Color.Navy;
+            queueToggleButton.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            queueToggleButton.ForeColor = Color.White;
+            queueToggleButton.Location = new Point(466, 156);
+            queueToggleButton.Name = "queueToggleButton";
+            queueToggleButton.Size = new Size(85, 43);
+            queueToggleButton.TabIndex = 13;
+            queueToggleButton.Text = "Circular Queue";
+            queueToggleButton.UseVisualStyleBackColor = false;
+            queueToggleButton.Click += ToggleQueueTypeButtonClick;
+            // 
             // updateCircularQueueSizeButton
             // 
-            updateCircularQueueSizeButton.BackColor = Color.PowderBlue;
-            updateCircularQueueSizeButton.FlatStyle = FlatStyle.Popup;
+            updateCircularQueueSizeButton.BackColor = Color.LightSeaGreen;
             updateCircularQueueSizeButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            updateCircularQueueSizeButton.Location = new Point(412, 17);
+            updateCircularQueueSizeButton.ForeColor = Color.White;
+            updateCircularQueueSizeButton.Location = new Point(303, 19);
             updateCircularQueueSizeButton.Name = "updateCircularQueueSizeButton";
-            updateCircularQueueSizeButton.Size = new Size(85, 28);
+            updateCircularQueueSizeButton.Size = new Size(84, 39);
             updateCircularQueueSizeButton.TabIndex = 12;
             updateCircularQueueSizeButton.Text = "Update Size";
             updateCircularQueueSizeButton.UseVisualStyleBackColor = false;
@@ -298,7 +358,7 @@ namespace WinForm
             // 
             // circularQueueSizeTextBox
             // 
-            circularQueueSizeTextBox.Location = new Point(306, 17);
+            circularQueueSizeTextBox.Location = new Point(129, 31);
             circularQueueSizeTextBox.Name = "circularQueueSizeTextBox";
             circularQueueSizeTextBox.Size = new Size(100, 23);
             circularQueueSizeTextBox.TabIndex = 11;
@@ -307,63 +367,50 @@ namespace WinForm
             // 
             circularQueueSizeLabel.AutoSize = true;
             circularQueueSizeLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            circularQueueSizeLabel.Location = new Point(162, 20);
+            circularQueueSizeLabel.Location = new Point(39, 31);
             circularQueueSizeLabel.Name = "circularQueueSizeLabel";
-            circularQueueSizeLabel.Size = new Size(146, 20);
+            circularQueueSizeLabel.Size = new Size(89, 20);
             circularQueueSizeLabel.TabIndex = 10;
-            circularQueueSizeLabel.Text = "Circular Queue Size:";
-            // 
-            // makeCircularQueueCheckBox
-            // 
-            makeCircularQueueCheckBox.AutoSize = true;
-            makeCircularQueueCheckBox.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            makeCircularQueueCheckBox.Location = new Point(23, 22);
-            makeCircularQueueCheckBox.Name = "makeCircularQueueCheckBox";
-            makeCircularQueueCheckBox.Size = new Size(142, 19);
-            makeCircularQueueCheckBox.TabIndex = 9;
-            makeCircularQueueCheckBox.Text = "Make Queue Circular";
-            makeCircularQueueCheckBox.UseVisualStyleBackColor = true;
-            makeCircularQueueCheckBox.CheckedChanged += IsCircularQueueCheckedChanged;
+            circularQueueSizeLabel.Text = "Queue Size:";
             // 
             // enqueueCustomerButton
             // 
             enqueueCustomerButton.BackColor = Color.LimeGreen;
             enqueueCustomerButton.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            enqueueCustomerButton.Location = new Point(334, 321);
+            enqueueCustomerButton.Location = new Point(464, 106);
             enqueueCustomerButton.Name = "enqueueCustomerButton";
-            enqueueCustomerButton.Size = new Size(175, 43);
+            enqueueCustomerButton.Size = new Size(85, 43);
             enqueueCustomerButton.TabIndex = 8;
-            enqueueCustomerButton.Text = "Enqueue Customer";
+            enqueueCustomerButton.Text = "Enqueue ";
             enqueueCustomerButton.UseVisualStyleBackColor = false;
             enqueueCustomerButton.Click += ShowEnqueueCustomerView;
             // 
             // dequeueCustomerButton
             // 
             dequeueCustomerButton.BackColor = Color.Red;
-            dequeueCustomerButton.FlatStyle = FlatStyle.Popup;
             dequeueCustomerButton.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             dequeueCustomerButton.ForeColor = Color.White;
-            dequeueCustomerButton.Location = new Point(23, 321);
+            dequeueCustomerButton.Location = new Point(464, 57);
             dequeueCustomerButton.Name = "dequeueCustomerButton";
-            dequeueCustomerButton.Size = new Size(175, 43);
+            dequeueCustomerButton.Size = new Size(85, 43);
             dequeueCustomerButton.TabIndex = 7;
-            dequeueCustomerButton.Text = "Dequeue Customer";
+            dequeueCustomerButton.Text = "Dequeue";
             dequeueCustomerButton.UseVisualStyleBackColor = false;
             dequeueCustomerButton.Click += DequeueCustomerButtonClick;
             // 
             // totalAmountOwedTextBox
             // 
-            totalAmountOwedTextBox.Location = new Point(409, 287);
+            totalAmountOwedTextBox.Location = new Point(336, 304);
             totalAmountOwedTextBox.Name = "totalAmountOwedTextBox";
             totalAmountOwedTextBox.ReadOnly = true;
-            totalAmountOwedTextBox.Size = new Size(100, 23);
+            totalAmountOwedTextBox.Size = new Size(71, 23);
             totalAmountOwedTextBox.TabIndex = 6;
             // 
             // totalAmountOwedLabel
             // 
             totalAmountOwedLabel.AutoSize = true;
             totalAmountOwedLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            totalAmountOwedLabel.Location = new Point(256, 290);
+            totalAmountOwedLabel.Location = new Point(183, 305);
             totalAmountOwedLabel.Name = "totalAmountOwedLabel";
             totalAmountOwedLabel.Size = new Size(154, 20);
             totalAmountOwedLabel.TabIndex = 5;
@@ -371,52 +418,52 @@ namespace WinForm
             // 
             // totalCustomerTextBox
             // 
-            totalCustomerTextBox.Location = new Point(71, 287);
+            totalCustomerTextBox.Location = new Point(65, 302);
             totalCustomerTextBox.Name = "totalCustomerTextBox";
             totalCustomerTextBox.ReadOnly = true;
-            totalCustomerTextBox.Size = new Size(100, 23);
+            totalCustomerTextBox.Size = new Size(43, 23);
             totalCustomerTextBox.TabIndex = 4;
             // 
             // totalCustomersLabel
             // 
             totalCustomersLabel.AutoSize = true;
             totalCustomersLabel.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            totalCustomersLabel.Location = new Point(23, 290);
+            totalCustomersLabel.Location = new Point(17, 303);
             totalCustomersLabel.Name = "totalCustomersLabel";
             totalCustomersLabel.Size = new Size(48, 20);
             totalCustomersLabel.TabIndex = 3;
             totalCustomersLabel.Text = "Total:";
             // 
-            // dequeuedCustomerGroupBox
+            // customerGroupBox
             // 
-            dequeuedCustomerGroupBox.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            dequeuedCustomerGroupBox.BackColor = Color.Khaki;
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerNameTextBox);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerNameLabel);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAgeLabel);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAgeTextBox);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAmountOwedLabel);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAmountOwedTextBox);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAddressLabel);
-            dequeuedCustomerGroupBox.Controls.Add(dequeuedCustomerAddressTextBox);
-            dequeuedCustomerGroupBox.Controls.Add(closeDequeuedCustomerViewButton);
-            dequeuedCustomerGroupBox.FlatStyle = FlatStyle.Popup;
-            dequeuedCustomerGroupBox.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dequeuedCustomerGroupBox.Location = new Point(40, 28);
-            dequeuedCustomerGroupBox.Name = "dequeuedCustomerGroupBox";
-            dequeuedCustomerGroupBox.Size = new Size(476, 274);
-            dequeuedCustomerGroupBox.TabIndex = 12;
-            dequeuedCustomerGroupBox.TabStop = false;
-            dequeuedCustomerGroupBox.Text = "Dequeued Customer";
+            customerGroupBox.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            customerGroupBox.BackColor = Color.Khaki;
+            customerGroupBox.Controls.Add(customerNameTextBox);
+            customerGroupBox.Controls.Add(dequeuedCustomerNameLabel);
+            customerGroupBox.Controls.Add(dequeuedCustomerAgeLabel);
+            customerGroupBox.Controls.Add(customerAgeTextBox);
+            customerGroupBox.Controls.Add(dequeuedCustomerAmountOwedLabel);
+            customerGroupBox.Controls.Add(customerAmountOwedTextBox);
+            customerGroupBox.Controls.Add(dequeuedCustomerAddressLabel);
+            customerGroupBox.Controls.Add(customerAddressTextBox);
+            customerGroupBox.Controls.Add(closeDequeuedCustomerViewButton);
+            customerGroupBox.FlatStyle = FlatStyle.Popup;
+            customerGroupBox.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            customerGroupBox.Location = new Point(31, 30);
+            customerGroupBox.Name = "customerGroupBox";
+            customerGroupBox.Size = new Size(476, 274);
+            customerGroupBox.TabIndex = 12;
+            customerGroupBox.TabStop = false;
+            customerGroupBox.Text = "Dequeued Customer";
             // 
-            // dequeuedCustomerNameTextBox
+            // customerNameTextBox
             // 
-            dequeuedCustomerNameTextBox.Location = new Point(112, 50);
-            dequeuedCustomerNameTextBox.Name = "dequeuedCustomerNameTextBox";
-            dequeuedCustomerNameTextBox.ReadOnly = true;
-            dequeuedCustomerNameTextBox.Size = new Size(336, 23);
-            dequeuedCustomerNameTextBox.TabIndex = 2;
-            dequeuedCustomerNameTextBox.TabStop = false;
+            customerNameTextBox.Location = new Point(112, 50);
+            customerNameTextBox.Name = "customerNameTextBox";
+            customerNameTextBox.ReadOnly = true;
+            customerNameTextBox.Size = new Size(336, 23);
+            customerNameTextBox.TabIndex = 2;
+            customerNameTextBox.TabStop = false;
             // 
             // dequeuedCustomerNameLabel
             // 
@@ -438,14 +485,14 @@ namespace WinForm
             dequeuedCustomerAgeLabel.TabIndex = 5;
             dequeuedCustomerAgeLabel.Text = "Age:";
             // 
-            // dequeuedCustomerAgeTextBox
+            // customerAgeTextBox
             // 
-            dequeuedCustomerAgeTextBox.Location = new Point(112, 139);
-            dequeuedCustomerAgeTextBox.Name = "dequeuedCustomerAgeTextBox";
-            dequeuedCustomerAgeTextBox.ReadOnly = true;
-            dequeuedCustomerAgeTextBox.Size = new Size(119, 23);
-            dequeuedCustomerAgeTextBox.TabIndex = 4;
-            dequeuedCustomerAgeTextBox.TabStop = false;
+            customerAgeTextBox.Location = new Point(112, 139);
+            customerAgeTextBox.Name = "customerAgeTextBox";
+            customerAgeTextBox.ReadOnly = true;
+            customerAgeTextBox.Size = new Size(119, 23);
+            customerAgeTextBox.TabIndex = 4;
+            customerAgeTextBox.TabStop = false;
             // 
             // dequeuedCustomerAmountOwedLabel
             // 
@@ -457,14 +504,14 @@ namespace WinForm
             dequeuedCustomerAmountOwedLabel.TabIndex = 7;
             dequeuedCustomerAmountOwedLabel.Text = "Amount Owed:";
             // 
-            // dequeuedCustomerAmountOwedTextBox
+            // customerAmountOwedTextBox
             // 
-            dequeuedCustomerAmountOwedTextBox.Location = new Point(329, 142);
-            dequeuedCustomerAmountOwedTextBox.Name = "dequeuedCustomerAmountOwedTextBox";
-            dequeuedCustomerAmountOwedTextBox.ReadOnly = true;
-            dequeuedCustomerAmountOwedTextBox.Size = new Size(119, 23);
-            dequeuedCustomerAmountOwedTextBox.TabIndex = 6;
-            dequeuedCustomerAmountOwedTextBox.TabStop = false;
+            customerAmountOwedTextBox.Location = new Point(329, 142);
+            customerAmountOwedTextBox.Name = "customerAmountOwedTextBox";
+            customerAmountOwedTextBox.ReadOnly = true;
+            customerAmountOwedTextBox.Size = new Size(119, 23);
+            customerAmountOwedTextBox.TabIndex = 6;
+            customerAmountOwedTextBox.TabStop = false;
             // 
             // dequeuedCustomerAddressLabel
             // 
@@ -476,15 +523,15 @@ namespace WinForm
             dequeuedCustomerAddressLabel.TabIndex = 9;
             dequeuedCustomerAddressLabel.Text = "Address:";
             // 
-            // dequeuedCustomerAddressTextBox
+            // customerAddressTextBox
             // 
-            dequeuedCustomerAddressTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dequeuedCustomerAddressTextBox.Location = new Point(112, 92);
-            dequeuedCustomerAddressTextBox.Name = "dequeuedCustomerAddressTextBox";
-            dequeuedCustomerAddressTextBox.ReadOnly = true;
-            dequeuedCustomerAddressTextBox.Size = new Size(336, 23);
-            dequeuedCustomerAddressTextBox.TabIndex = 8;
-            dequeuedCustomerAddressTextBox.TabStop = false;
+            customerAddressTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            customerAddressTextBox.Location = new Point(112, 92);
+            customerAddressTextBox.Name = "customerAddressTextBox";
+            customerAddressTextBox.ReadOnly = true;
+            customerAddressTextBox.Size = new Size(336, 23);
+            customerAddressTextBox.TabIndex = 8;
+            customerAddressTextBox.TabStop = false;
             // 
             // closeDequeuedCustomerViewButton
             // 
@@ -501,37 +548,21 @@ namespace WinForm
             closeDequeuedCustomerViewButton.UseVisualStyleBackColor = false;
             closeDequeuedCustomerViewButton.Click += CloseDequeuedCustomerButtonOnClick;
             // 
-            // closeEnqueueCustomerFormButton
-            // 
-            closeEnqueueCustomerFormButton.BackColor = Color.Red;
-            closeEnqueueCustomerFormButton.FlatStyle = FlatStyle.Popup;
-            closeEnqueueCustomerFormButton.ForeColor = Color.White;
-            closeEnqueueCustomerFormButton.Location = new Point(418, 10);
-            closeEnqueueCustomerFormButton.Name = "closeEnqueueCustomerFormButton";
-            closeEnqueueCustomerFormButton.Size = new Size(30, 23);
-            closeEnqueueCustomerFormButton.TabIndex = 12;
-            closeEnqueueCustomerFormButton.Text = "X";
-            closeEnqueueCustomerFormButton.UseVisualStyleBackColor = false;
-            closeEnqueueCustomerFormButton.Click += CloseEnqueueCustomerView;
-            //
             // exitNewCustomerFormToolTip
-            //
-            exitNewCustomerFormToolTip.SetToolTip(closeEnqueueCustomerFormButton, "Close Enqueue Customer Form");
+            // 
             exitNewCustomerFormToolTip.AutoPopDelay = 5000;
             exitNewCustomerFormToolTip.InitialDelay = 1000;
             exitNewCustomerFormToolTip.ReshowDelay = 500;
-            
-            
             // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(617, 428);
-            Controls.Add(notificationGroupBox);
+            ClientSize = new Size(587, 359);
             Controls.Add(customersQueueGroupBox);
+            Controls.Add(notificationGroupBox);
             Controls.Add(newCustomerBox);
-            Controls.Add(dequeuedCustomerGroupBox);
+            Controls.Add(customerGroupBox);
             Name = "Home";
             Text = "Customer Manager";
             Load += MainFormLoad;
@@ -542,8 +573,8 @@ namespace WinForm
             notificationGroupBox.PerformLayout();
             customersQueueGroupBox.ResumeLayout(false);
             customersQueueGroupBox.PerformLayout();
-            dequeuedCustomerGroupBox.ResumeLayout(false);
-            dequeuedCustomerGroupBox.PerformLayout();
+            customerGroupBox.ResumeLayout(false);
+            customerGroupBox.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -567,18 +598,17 @@ namespace WinForm
         private TextBox totalAmountOwedTextBox;
         private Label totalAmountOwedLabel;
         private Button dequeueCustomerButton;
-        private GroupBox dequeuedCustomerGroupBox;
-        private TextBox dequeuedCustomerNameTextBox;
+        private GroupBox customerGroupBox;
+        private TextBox customerNameTextBox;
         private Label dequeuedCustomerNameLabel;
         private Label dequeuedCustomerAgeLabel;
-        private TextBox dequeuedCustomerAgeTextBox;
+        private TextBox customerAgeTextBox;
         private Label dequeuedCustomerAmountOwedLabel;
-        private TextBox dequeuedCustomerAmountOwedTextBox;
+        private TextBox customerAmountOwedTextBox;
         private Label dequeuedCustomerAddressLabel;
-        private TextBox dequeuedCustomerAddressTextBox;
+        private TextBox customerAddressTextBox;
         private Button closeDequeuedCustomerViewButton;
         private Button enqueueCustomerButton;
-        private CheckBox makeCircularQueueCheckBox;
         private TextBox circularQueueSizeTextBox;
         private Label circularQueueSizeLabel;
         private Button updateCircularQueueSizeButton;
@@ -587,5 +617,12 @@ namespace WinForm
         private Button notificationCloseButton;
         private Button closeEnqueueCustomerFormButton;
         private ToolTip exitNewCustomerFormToolTip;
+        private int defaultCircularQueueSize = 10;
+        private Button queueToggleButton;
+        private bool isCircularQueue = false;
+        private Button displayCustomerWithHighestOwedAmount;
+        private ToolTip customerWithHighestAmountOwedToolTip;
+        private Button populateQueueWithDummyDataButton;
+        private ToolTip dummyDataToolTip;
     }
 }

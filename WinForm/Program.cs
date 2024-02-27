@@ -1,4 +1,4 @@
-using Libraries.Interfaces;
+using Libraries.Entities;
 using Libraries.Services;
 
 namespace WinForm
@@ -14,7 +14,9 @@ namespace WinForm
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Home());
+            Application.Run(new Home(new CustomerService()));
+            var cq = new CircularMyQueue<string>(5);
+            cq.Peek();
         }
     }
 }

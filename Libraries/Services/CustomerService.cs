@@ -1,29 +1,14 @@
 ﻿using System.Globalization;
 using Libraries.Entities;
-using Libraries.Interfaces;
 
 namespace Libraries.Services;
 
-public class CustomerService: ICustomerService
+public class CustomerService
 {
-    private MyQueue<Customer> _customers;
+    private MyQueue<Customer> _customers = new();
 
-    public CustomerService(int size)
-    {
-        _customers = new CircularMyQueue<Customer>(size);
-    }
-    public CustomerService()
-    {
-        _customers = new MyQueue<Customer>();
-    }
-    
     public void AddCustomer(Customer customer)
     {
-        // check if the customer is null
-        if (customer == null)
-        {
-            throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
-        }
         // check if the customer is already in the queue using simple iteration
         if (_customers.ToArray().Any(customerInQueue => customer.Name == customerInQueue.Name 
                                              && customer.Age == customerInQueue.Age 
@@ -84,6 +69,17 @@ public class CustomerService: ICustomerService
             throw new InvalidOperationException("The new queue size is smaller than the current queue size");
         }
         var newQueue = new CircularMyQueue<Customer>(size);
+        foreach (var customer in _customers.ToArray())
+        {
+            newQueue.Enqueue(customer);
+        }
+        _customers = newQueue;
+    }
+
+    public void UseQueue()
+    {
+        if (_customers is not CircularMyQueue<Customer>) return;
+        var newQueue = new MyQueue<Customer>();
         foreach (var customer in _customers.ToArray())
         {
             newQueue.Enqueue(customer);
