@@ -49,7 +49,7 @@ namespace WinForm
             cancelButton = new Button();
             notificationGroupBox = new GroupBox();
             notificationCloseButton = new Button();
-            notoficationTextBox = new TextBox();
+            notificationTextBox = new TextBox();
             customersQueueGroupBox = new GroupBox();
             populateQueueWithDummyDataButton = new Button();
             displayCustomerWithHighestOwedAmount = new Button();
@@ -250,7 +250,7 @@ namespace WinForm
             // 
             notificationGroupBox.BackColor = Color.Gainsboro;
             notificationGroupBox.Controls.Add(notificationCloseButton);
-            notificationGroupBox.Controls.Add(notoficationTextBox);
+            notificationGroupBox.Controls.Add(notificationTextBox);
             notificationGroupBox.Location = new Point(31, 5);
             notificationGroupBox.Name = "notificationGroupBox";
             notificationGroupBox.Size = new Size(489, 354);
@@ -271,14 +271,14 @@ namespace WinForm
             // 
             // notoficationTextBox
             // 
-            notoficationTextBox.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            notoficationTextBox.Location = new Point(103, 132);
-            notoficationTextBox.Name = "notoficationTextBox";
-            notoficationTextBox.ReadOnly = true;
-            notoficationTextBox.Size = new Size(263, 29);
-            notoficationTextBox.TabIndex = 1;
-            notoficationTextBox.TabStop = false;
-            notoficationTextBox.TextAlign = HorizontalAlignment.Center;
+            notificationTextBox.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            notificationTextBox.Location = new Point(103, 132);
+            notificationTextBox.Name = "notificationTextBox";
+            notificationTextBox.ReadOnly = true;
+            notificationTextBox.Size = new Size(263, 29);
+            notificationTextBox.TabIndex = 1;
+            notificationTextBox.TabStop = false;
+            notificationTextBox.TextAlign = HorizontalAlignment.Center;
             // 
             // customersQueueGroupBox
             // 
@@ -355,6 +355,7 @@ namespace WinForm
             updateCircularQueueSizeButton.Text = "Update Size";
             updateCircularQueueSizeButton.UseVisualStyleBackColor = false;
             updateCircularQueueSizeButton.Click += UpdateCircularQueueSizeButtonClick;
+            updateCircularQueueSizeButton.Visible = isCircularQueue;
             // 
             // circularQueueSizeTextBox
             // 
@@ -362,6 +363,7 @@ namespace WinForm
             circularQueueSizeTextBox.Name = "circularQueueSizeTextBox";
             circularQueueSizeTextBox.Size = new Size(100, 23);
             circularQueueSizeTextBox.TabIndex = 11;
+            circularQueueSizeTextBox.Visible = isCircularQueue;
             // 
             // circularQueueSizeLabel
             // 
@@ -372,6 +374,7 @@ namespace WinForm
             circularQueueSizeLabel.Size = new Size(89, 20);
             circularQueueSizeLabel.TabIndex = 10;
             circularQueueSizeLabel.Text = "Queue Size:";
+            circularQueueSizeLabel.Visible = isCircularQueue;
             // 
             // enqueueCustomerButton
             // 
@@ -613,7 +616,7 @@ namespace WinForm
         private Label circularQueueSizeLabel;
         private Button updateCircularQueueSizeButton;
         private GroupBox notificationGroupBox;
-        private TextBox notoficationTextBox;
+        private TextBox notificationTextBox;
         private Button notificationCloseButton;
         private Button closeEnqueueCustomerFormButton;
         private ToolTip exitNewCustomerFormToolTip;

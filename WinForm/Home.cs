@@ -145,6 +145,7 @@ namespace WinForm
                 ShowNotification(GroupView.DequeuedCustomer, exception.Message, true);
             }
         }
+        
         private void UpdateCustomerQueue()
         {
             customersGridView.DataSource = null;
@@ -152,6 +153,7 @@ namespace WinForm
             totalAmountOwedTextBox.Text = _customerService.GetTotalAmountOwed().ToString(CultureInfo.InvariantCulture);
             totalCustomerTextBox.Text = _customerService.GetCustomers().Count().ToString();
         }
+        
         private void UpdateCircularQueueSizeButtonClick(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(circularQueueSizeTextBox.Text))
@@ -164,11 +166,17 @@ namespace WinForm
                 ShowNotification(GroupView.CustomersQueue, "Queue size must be a number", true);
                 return;
             }
-
+            defaultCircularQueueSize = int.Parse(circularQueueSizeTextBox.Text);
+            if (defaultCircularQueueSize <= _customerService.GetCustomerCount())
+            {
+                ShowNotification(GroupView.CustomersQueue, "New queue size must be more than the current customer count", true);
+                return;
+            }
+            
             try
             {
-                defaultCircularQueueSize = int.Parse(circularQueueSizeTextBox.Text);
                 _customerService.UseCircularQueue(defaultCircularQueueSize);
+                isCircularQueue = true;
                 UpdateCustomerQueue();
                 circularQueueSizeTextBox.Text = string.Empty;
                 ShowNotification(GroupView.CustomersQueue, "Queue size updated successfully");
@@ -182,12 +190,13 @@ namespace WinForm
 
         private void ShowNotification(GroupView groupView, string message, bool error = false)
         {
-            notoficationTextBox.Text = message;
-            var textSize = TextRenderer.MeasureText(notoficationTextBox.Text, notoficationTextBox.Font);
-            if (textSize.Width > notoficationTextBox.Width) notoficationTextBox.Multiline = true;
-            notoficationTextBox.BackColor = error ? Color.Red : Color.Green;
+            notificationTextBox.Text = message;
+            var textSize = TextRenderer.MeasureText(notificationTextBox.Text, notificationTextBox.Font);
+            if (textSize.Width > notificationTextBox.Width) notificationTextBox.Multiline = true;
+            notificationTextBox.Height = textSize.Height * 3;
+            notificationTextBox.BackColor = error ? Color.Red : Color.Green;
             // change the text color to white
-            notoficationTextBox.ForeColor = Color.White;
+            notificationTextBox.ForeColor = Color.White;
             switch (groupView)
             {
                 case GroupView.CustomersQueue:
@@ -212,7 +221,7 @@ namespace WinForm
 
         private void CloseNotificationButtonOnClick(object? sender, EventArgs e)
         {
-            notoficationTextBox.Text = string.Empty;
+            notificationTextBox.Text = string.Empty;
             notificationGroupBox.Visible = false;
             switch (_viewBeforeNotification)
             {
@@ -230,27 +239,23 @@ namespace WinForm
                     break;
             }
         }
+        
         private void ToggleQueueTypeButtonClick(object sender, EventArgs e)
         {
             try
             {
                 if (isCircularQueue)
                 {
-                    var circularQueueSizeTextIsNumber = int.TryParse(circularQueueSizeTextBox.Text,
-                        out var circularQueueSize);
-                    if (!circularQueueSizeTextIsNumber && !string.IsNullOrEmpty(circularQueueSizeTextBox.Text))
-                    {
-                        ShowNotification(GroupView.CustomersQueue, "Queue size must be a number", true);
-                        return;
-                    }
-                    _customerService.UseCircularQueue(circularQueueSize);
-                    defaultCircularQueueSize = circularQueueSize;
+                    _customerService.UseCircularQueue(_customerService.GetCustomerCount() * 2);
                 }
                 else
                 {
                     _customerService.UseQueue();
                 }
                 isCircularQueue = !isCircularQueue;
+                updateCircularQueueSizeButton.Visible = isCircularQueue;
+                circularQueueSizeTextBox.Visible = isCircularQueue;
+                circularQueueSizeLabel.Visible = isCircularQueue;
                 queueToggleButton.Text = isCircularQueue ? "Regular Queue" : "Circular Queue";
                 UpdateCustomerQueue();
             }
@@ -292,24 +297,8 @@ namespace WinForm
         {
             try
             {
-                // get current customer count
-                var customerCount = _customerService.GetCustomerCount();
-                // get the default queue size
-                var queueSize = isCircularQueue ? defaultCircularQueueSize : 5;
-                // check if the queue is full
-                if (customerCount == queueSize)
-                {
-                    ShowNotification(GroupView.CustomersQueue, "Queue is full", true);
-                    return;
-                }
-                for (var i = 0; i < queueSize - customerCount; i++)
-                {
-                    // random age
-                    var randomAge = new Random().Next(15, 80);
-                    var randomAmountOwed = new Random().NextDouble();
-                    _customerService.AddCustomer(new Customer($"Customer {i + 1}", randomAge.ToString(), "123 Main St", (float)randomAmountOwed));
-                    UpdateCustomerQueue();
-                }
+                _customerService.AddDummyData();
+                UpdateCustomerQueue();
             }
             catch (Exception exception)
             {

@@ -6,6 +6,8 @@ namespace Libraries.Services;
 public class CustomerService
 {
     private MyQueue<Customer> _customers = new();
+    private bool IsCircular => _customers is CircularMyQueue<Customer>;
+    private bool hasDummyData = false;
 
     public void AddCustomer(Customer customer)
     {
@@ -63,7 +65,7 @@ public class CustomerService
     
     public void UseCircularQueue(int size)
     {
-        if (_customers is CircularMyQueue<Customer>) return;
+        if (IsCircular) return;
         if (_customers.Count() > size)
         {
             throw new InvalidOperationException("The new queue size is smaller than the current queue size");
@@ -78,12 +80,23 @@ public class CustomerService
 
     public void UseQueue()
     {
-        if (_customers is not CircularMyQueue<Customer>) return;
+        if (!IsCircular) return;
         var newQueue = new MyQueue<Customer>();
         foreach (var customer in _customers.ToArray())
         {
             newQueue.Enqueue(customer);
         }
         _customers = newQueue;
+    }
+
+    public void AddDummyData()
+    {
+        if(hasDummyData) throw new Exception("Dummy data already added");
+        AddCustomer(new Customer("John Doe", 25.ToString(), "123 Main St", 100.00f));
+        AddCustomer(new Customer("Jane Doe", 30.ToString(), "123 Main St", 200.00f));
+        AddCustomer(new Customer("John Smith", 35.ToString(), "123 Main St", 300.00f));
+        AddCustomer(new Customer("Jane Smith", 40.ToString(), "123 Main St", 400.00f));
+        AddCustomer(new Customer("John Johnson", 45.ToString(), "123 Main St", 500.00f));
+        hasDummyData = true;
     }
 }
